@@ -1,7 +1,7 @@
 
 import { useState, createContext, useEffect } from 'react';
 import firebase from '../services/firebaseConnection';
-import {toast} from 'react-toastify';
+import { toast } from 'react-toastify';
 
 export const AuthContext = createContext({});
 
@@ -28,12 +28,12 @@ function AuthProvider({ children }){
   }, [])
 
 
-  async function signIn(email,password){
-
+  //Fazendo login do usuario
+  async function signIn(email, password){
     setLoadingAuth(true);
 
-    await firebase.auth().signInWithEmailAndPassword(email,password)
-    .then(async(value)=>{
+    await firebase.auth().signInWithEmailAndPassword(email, password)
+    .then(async (value)=> {
       let uid = value.user.uid;
 
       const userProfile = await firebase.firestore().collection('users')
@@ -42,22 +42,27 @@ function AuthProvider({ children }){
       let data = {
         uid: uid,
         nome: userProfile.data().nome,
-        email: value.user.email,
-        avatarUrl: userProfile.data().avatarUrl
-      }
+        avatarUrl: userProfile.data().avatarUrl,
+        email: value.user.email
+      };
+
       setUser(data);
       storageUser(data);
       setLoadingAuth(false);
-      toast.success('Bem-vindo de volta!');
+      toast.success('Bem vindo de volta!');
+
+
     })
     .catch((error)=>{
       console.log(error);
-      toast.error('Ops, algo deu errado!!!');
+      toast.error('Ops algo deu errado!');
       setLoadingAuth(false);
     })
+
   }
 
 
+  //Cadastrando um novo usuario
   async function signUp(email, password, nome){
     setLoadingAuth(true);
 
@@ -82,14 +87,15 @@ function AuthProvider({ children }){
         setUser(data);
         storageUser(data);
         setLoadingAuth(false);
-        toast.success('Bem-vindo a plataforma!');
+        toast.success('Bem vindo a plataforma!');
+
       })
 
     })
     .catch((error)=>{
-      toast.error('Ops, algo deu errado!!!');
       console.log(error);
-      setLoadingAuth(false);      
+      toast.error('Ops algo deu errado!');
+      setLoadingAuth(false);
     })
 
   }
@@ -101,6 +107,8 @@ function AuthProvider({ children }){
   }
 
 
+
+  //Logout do usuario
   async function signOut(){
     await firebase.auth().signOut();
     localStorage.removeItem('SistemaUser');
