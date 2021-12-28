@@ -29,7 +29,7 @@ export default function Customers(){
         setNomeFantasia('');
         setCnpj('');
         setEndereco('');
-        toast.success('Empresa cadastrada com sucesso!!!')
+        toast.info('Empresa cadastrada com sucesso!!!')
       })
       .catch((error)=>{
         toast.error("Ops, ocorreu um erro ao cadastrar a empressa!!");
