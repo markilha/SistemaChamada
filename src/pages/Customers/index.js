@@ -4,9 +4,9 @@ import './customers.css';
 import Title from '../../components/Title';
 import Header from '../../components/Header';
 import firebase from '../../services/firebaseConnection';
-import {toast} from 'react-toastify'
-
 import { FiUser } from 'react-icons/fi';
+
+import { toast } from 'react-toastify';
 
 export default function Customers(){
   const [nomeFantasia, setNomeFantasia] = useState('');
@@ -15,9 +15,9 @@ export default function Customers(){
 
 
 
- async function handleAdd(e){
+  async function handleAdd(e){
     e.preventDefault();
-
+    
     if(nomeFantasia !== '' && cnpj !== '' && endereco !== ''){
       await firebase.firestore().collection('customers')
       .add({
@@ -29,14 +29,16 @@ export default function Customers(){
         setNomeFantasia('');
         setCnpj('');
         setEndereco('');
-        toast.info('Empresa cadastrada com sucesso!!!')
+        toast.info('Empresa cadastrada com sucesso!');
       })
       .catch((error)=>{
-        toast.error("Ops, ocorreu um erro ao cadastrar a empressa!!");
+        console.log(error);
+        toast.error('Erro ao cadastrar essa empresa.');
       })
     }else{
-      toast.error('Preencha todos os campos!!!');
-    }   
+      toast.error('Preencha todos os campos!')
+    }
+
   }
 
   return(

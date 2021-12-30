@@ -4,7 +4,6 @@ import './profile.css';
 import Header from '../../components/Header';
 import Title from '../../components/Title';
 import avatar from '../../assets/avatar.png';
-import {toast} from 'react-toastify';
 
 import firebase from '../../services/firebaseConnection';
 import { AuthContext } from '../../contexts/auth';
@@ -22,17 +21,23 @@ export default function Profile(){
 
 
   function handleFile(e){
+
     if(e.target.files[0]){
-      const image = e.target.files[0];      
+      const image = e.target.files[0];
+      
       if(image.type === 'image/jpeg' || image.type === 'image/png'){
+
         setImageAvatar(image);
         setAvatarUrl(URL.createObjectURL(e.target.files[0]))
+
       }else{
-        toast.error('Envie uma imagem do tipo PNG ou JPEG');
+        alert('Envie uma imagem do tipo PNG ou JPEG');
         setImageAvatar(null);
         return null;
       }
+
     }
+
   }
 
   async function handleUpload(){
@@ -42,11 +47,13 @@ export default function Profile(){
     .ref(`images/${currentUid}/${imageAvatar.name}`)
     .put(imageAvatar)
     .then( async () => {
-      toast.success('FOTO ENVIADA COM SUCESSO!');
+      console.log('FOTO ENVIADA COM SUCESSO!');
+
       await firebase.storage().ref(`images/${currentUid}`)
       .child(imageAvatar.name).getDownloadURL()
       .then( async (url)=>{
-        let urlFoto = url;        
+        let urlFoto = url;
+        
         await firebase.firestore().collection('users')
         .doc(user.uid)
         .update({
@@ -61,13 +68,19 @@ export default function Profile(){
           }; 
           setUser(data);
           storageUser(data);
+
         })
+
       })
+
     })
+
   }
+
 
   async function handleSave(e){
     e.preventDefault();
+
     if(imageAvatar === null && nome !== ''){
       await firebase.firestore().collection('users')
       .doc(user.uid)
@@ -81,11 +94,14 @@ export default function Profile(){
         };
         setUser(data);
         storageUser(data);
+
       })
+
     }
     else if(nome !== '' && imageAvatar !== null){
       handleUpload();
     }
+
   }
 
   return(
