@@ -50,8 +50,27 @@ export default function New() {
   },[]);
 
 
-  function handleRegister(e) {
-    e.preventDefault();    
+  async function handleRegister(e) {
+    e.preventDefault();  
+    await firebase.firestore().collection('chamados')
+    .add({
+      creaded: new Date(),
+      cliente:customers[customerSelected].nomeFantasia,
+      clienteId: customers[customerSelected].id,
+      assunto: assunto,
+      status: status,
+      complemento: complemento,
+      userId: user.uid
+    })  
+    .then(()=>{
+
+      toast.success("Chamado gravado com sucesso!!!");
+      setComplemento('');
+      setCustomerSelected(0);
+    })
+    .catch((error)=>{
+      toast.error("Ops, ocorreu um erro: ",error);
+    })
   }
   function handleChangeSelect(e) {
     setAssunto(e.target.value);
